@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirect Berdasarkan Waktu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            background: linear-gradient(to right, #fdbb2d, #b21f1f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .time-info {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .time-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #fdbb2d;
+        }
+        
+        .status {
+            font-size: 1.5rem;
+            margin: 25px 0;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .allowed {
+            background-color: rgba(76, 175, 80, 0.3);
+            border: 1px solid #4CAF50;
+        }
+        
+        .denied {
+            background-color: rgba(244, 67, 54, 0.3);
+            border: 1px solid #F44336;
+        }
+        
+        .schedule {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .countdown {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #fdbb2d;
+        }
+        
+        .redirecting {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .time-display {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistem Redirect Berdasarkan Waktu</h1>
+        
+        <div class="time-info">
+            <p>Waktu saat ini (WIB):</p>
+            <div class="time-display" id="currentTime">--:--:--</div>
+        </div>
+        
+        <div class="status" id="status">
+            Memeriksa waktu akses...
+        </div>
+        
+        <div class="countdown" id="countdown"></div>
+        
+        <div class="schedule">
+            <div class="schedule-item">
+                <span>13:30 - 15:30 WIB</span>
+                <span>Link 1</span>
+            </div>
+            <div class="schedule-item">
+                <span>19:00 - 21:30 WIB</span>
+                <span>Link 2</span>
+            </div>
+            <div class="schedule-item">
+                <span>Waktu Lain</span>
+                <span>Akses Ditolak</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Link tujuan
+        const link1 = 'https://example.com/link1';
+        const link2 = 'https://example.com/link2';
+        
+        // Elemen DOM
+        const currentTimeElement = document.getElementById('currentTime');
+        const statusElement = document.getElementById('status');
+        const countdownElement = document.getElementById('countdown');
+        
+        // Fungsi untuk mendapatkan waktu saat ini dalam WIB
+        function getCurrentWIBTime() {
+            const now = new Date();
+            
+            // Konversi ke WIB (UTC+7)
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const wibTime = new Date(utc + (3600000 * 7));
+            
+            return wibTime;
+        }
+        
+        // Fungsi untuk memformat waktu
+        function formatTime(date) {
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            
+            return `${hours}:${minutes}:${seconds}`;
+        }
+        
+        // Fungsi untuk memeriksa apakah waktu saat ini berada dalam rentang
+        function isTimeInRange(startHour, startMinute, endHour, endMinute) {
+            const now = getCurrentWIBTime();
+            const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
+            const startTotalMinutes = startHour * 60 + startMinute;
+            const endTotalMinutes = endHour * 60 + endMinute;
+            
+            return currentTotalMinutes >= startTotalMinutes && currentTotalMinutes <= endTotalMinutes;
+        }
+        
+        // Fungsi untuk menghitung waktu menuju jadwal berikutnya
+        function getTimeUntilNextSchedule() {
+            const now = getCurrentWIBTime();
+            const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
+            
+            // Jadwal dalam format [startHour, startMinute, endHour, endMinute]
+            const schedules = [
+                [13, 30, 15, 30],  // Jadwal 1
+                [19, 0, 21, 30]    // Jadwal 2
+            ];
+            
+            let nextSchedule = null;
+            let minDiff = Infinity;
+            
+            // Cari jadwal terdekat
+            for (const schedule of schedules) {
+                const [startHour, startMinute] = schedule;
+                const startTotalMinutes = startHour * 60 + startMinute;
+                
+                // Jika jadwal sudah lewat hari ini, cari untuk besok
+                let diff = startTotalMinutes - currentTotalMinutes;
+                if (diff < 0) {
+                    diff += 24 * 60; // Tambah 24 jam (dalam menit)
+                }
+                
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    nextSchedule = schedule;
+                }
+            }
+            
+            return {
+                hours: Math.floor(minDiff / 60),
+                minutes: minDiff % 60,
+                schedule: nextSchedule
+            };
+        }
+        
+        // Fungsi utama untuk memeriksa dan melakukan redirect
+        function checkAndRedirect() {
+            const now = getCurrentWIBTime();
+            const currentTimeFormatted = formatTime(now);
+            currentTimeElement.textContent = currentTimeFormatted;
+            
+            // Cek apakah waktu saat ini berada dalam jadwal redirect
+            if (isTimeInRange(13, 30, 15, 30)) {
+                // Redirect ke Link 1
+                statusElement.textContent = "Mengarahkan ke Link 1...";
+                statusElement.className = "status allowed redirecting";
+                countdownElement.textContent = "Redirect dalam 5 detik...";
+                
+                setTimeout(() => {
+                    window.location.href = link1;
+                }, 5000);
+                
+            } else if (isTimeInRange(19, 0, 21, 30)) {
+                // Redirect ke Link 2
+                statusElement.textContent = "Mengarahkan ke Link 2...";
+                statusElement.className = "status allowed redirecting";
+                countdownElement.textContent = "Redirect dalam 5 detik...";
+                
+                setTimeout(() => {
+                    window.location.href = link2;
+                }, 5000);
+                
+            } else {
+                // Diluar jam akses - tolak akses
+                statusElement.textContent = "Akses Ditolak - Diluar jam yang ditentukan";
+                statusElement.className = "status denied";
+                
+                // Tampilkan countdown menuju jadwal berikutnya
+                const timeUntilNext = getTimeUntilNextSchedule();
+                if (timeUntilNext.schedule) {
+                    const [startHour, startMinute] = timeUntilNext.schedule;
+                    countdownElement.textContent = 
+                        `Jadwal berikutnya: ${startHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')} WIB (${timeUntilNext.hours} jam ${timeUntilNext.minutes} menit lagi)`;
+                }
+            }
+        }
+        
+        // Jalankan fungsi pertama kali
+        checkAndRedirect();
+        
+        // Update waktu setiap detik
+        setInterval(() => {
+            const now = getCurrentWIBTime();
+            const currentTimeFormatted = formatTime(now);
+            currentTimeElement.textContent = currentTimeFormatted;
+        }, 1000);
+        
+        // Periksa ulang redirect setiap 30 detik (untuk berjaga-jaga jika ada perubahan waktu)
+        setInterval(checkAndRedirect, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absen Guru - Dayah</title>
+</head>
+<body style="margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; color: #333333; line-height: 1.6; padding: 20px; min-height: 100vh;">
+    <div class="container" style="max-width: 800px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
+        <header style="background: linear-gradient(135deg, #1a5632, #2e7d32); color: #ffffff; padding: 30px 20px; text-align: center; position: relative;">
+            <h1 style="font-size: 2rem; margin-bottom: 10px; font-weight: 600;">LAPORAN GURU</h1>
+            <div class="status-badge tidak-hadir" style="display: inline-block; padding: 6px 15px; background-color: #ff5252; color: white; border-radius: 20px; font-size: 2.85rem; font-weight: 600; margin-top: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);"> {{Keterangan}} </div>
+
+        </header>
+        
+        <div class="content" style="padding: 30px;">
+            <div class="info-card" style="background-color: #e8f5e9; border-left: 4px solid #1a5632; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);">
+                <h2 style="color: #1a5632; margin-bottom: 15px; font-size: 1.3rem;">Laporan Kehadiran Guru</h2>
+                <table class="data-table" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <th style="text-align: left; padding: 12px 15px; width: 30%; color: #1a5632; font-weight: 600;">Nama</th>
+                        <td style="padding: 12px 15px; color: #333333;">: {{Nama}} </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                        <th style="text-align: left; padding: 12px 15px; width: 30%; color: #1a5632; font-weight: 600;">Status</th>
+                        <td style="padding: 12px 15px; color: #333333;">: {{Keterangan}}</td>
+                    </tr>
+                    <tr>
+                        <th style="text-align: left; padding: 12px 15px; width: 30%; color: #1a5632; font-weight: 600;">Pengganti</th>
+                        <td style="padding: 12px 15px; color: #333333;">: {{Pengganti}} </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="info-card" style="background-color: #e8f5e9; border-left: 4px solid #1a5632; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);">
+                <h2 style="color: #1a5632; margin-bottom: 15px; font-size: 1.3rem;">Keterangan</h2>
+                <p>-.</p>
+            </div>
+        </div>
+        
+        <div class="footer" style="text-align: center; padding: 20px; color: #666666; font-size: 0.9rem; border-top: 1px solid #e0e0e0; margin-top: 20px;">
+            &copy; 2025 Absen Dayah Madinatuddiniyah Babussalam
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unduh File Google Sheets</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+      
+        
+        p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+       
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(52, 152, 219, 0.6);
+            background: linear-gradient(135deg, #2980b9, #3498db);
+        }
+        
+        .download-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .download-icon {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .note {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .download-btn {
+                font-size: 1.1rem;
+                padding: 12px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="download-btn" id="downloadBtn">
+            Unduh File Sekarang
+        </button>
+        
+        <p class="note">Setelah mengunduh, file akan tersimpan di folder unduhan perangkat Anda.</p>
+    </div>
+
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            // URL file Google Sheets yang akan diunduh
+            // Menggunakan format ekspor Google Sheets untuk format Excel
+            const fileId = '1UGkih7BhKSc9p7k9z9jHrMA9jLAlGvWqP6E7-pvDFSc';
+            const downloadUrl = `https://docs.google.com/spreadsheets/d/${fileId}/export?format=xlsx`;
+            
+            // Membuat elemen <a> sementara untuk mengunduh file
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.target = '_blank';
+            link.download = 'Spreadsheet_Data.xlsx'; // Nama file saat diunduh
+            
+            // Menambahkan elemen ke dokumen dan mengkliknya
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Memberikan feedback visual
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="download-icon">✅</span> File Sedang Diunduh...';
+            this.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+            
+            // Mengembalikan tampilan tombol setelah beberapa detik
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.style.background = 'linear-gradient(135deg, #3498db, #2980b9)';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
